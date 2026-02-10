@@ -1,4 +1,6 @@
 class BaseSimConfig:
+    simulation_backend = "isaac_lab" # "isaac_gym" or "isaac_lab"
+
     # viewer camera:
     class viewer:
         headless = False

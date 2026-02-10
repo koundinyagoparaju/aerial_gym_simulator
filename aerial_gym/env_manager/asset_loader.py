@@ -1,10 +1,10 @@
 import os
 import random
 
-from isaacgym import gymapi
-from aerial_gym.assets.warp_asset import WarpAsset
-from aerial_gym.assets.isaacgym_asset import IsaacGymAsset
+gymapi = None
+IsaacGymAsset = None
 
+from aerial_gym.assets.warp_asset import WarpAsset
 from collections import deque
 
 
@@ -14,25 +14,15 @@ logger = CustomLogger("asset_loader")
 
 
 def asset_class_to_AssetOptions(asset_class):
-    asset_options = gymapi.AssetOptions()
-    asset_options.collapse_fixed_joints = asset_class.collapse_fixed_joints
-    asset_options.replace_cylinder_with_capsule = asset_class.replace_cylinder_with_capsule
-    asset_options.flip_visual_attachments = asset_class.flip_visual_attachments
-    asset_options.fix_base_link = asset_class.fix_base_link
-    asset_options.density = asset_class.density
-    asset_options.angular_damping = asset_class.angular_damping
-    asset_options.linear_damping = asset_class.linear_damping
-    asset_options.max_angular_velocity = asset_class.max_angular_velocity
-    asset_options.max_linear_velocity = asset_class.max_linear_velocity
-    asset_options.disable_gravity = asset_class.disable_gravity
-    return asset_options
+    # gymapi is not available
+    return None
 
 
 class AssetLoader:
     def __init__(self, global_sim_dict, device):
         self.global_sim_dict = global_sim_dict
-        self.gym = self.global_sim_dict["gym"]
-        self.sim = self.global_sim_dict["sim"]
+        # self.gym = self.global_sim_dict["gym"] # Removed
+        # self.sim = self.global_sim_dict["sim"] # Removed
         self.cfg = self.global_sim_dict["env_cfg"]
         self.device = device
         self.env_config = self.cfg.env_config
@@ -125,23 +115,10 @@ class AssetLoader:
                         + "configuration file."
                     )
                     logger.warning(msg_str)
-            elif (
-                use_camera_collision_mesh != asset_class_config.use_collision_mesh_instead_of_visual
-            ):
-                msg_str = (
-                    "Choosing between collision and visual meshes per asset is not supported"
-                    + "for Isaac Gym rendering pipeline. If the Isaac Gym rendering pipeline is selected, "
-                    + "you can render only visual or only collision meshes for all assets."
-                    + " Please make ensure that the appropriate option is set in the sensor configuration file."
-                    + " Current simulation will run but will render only the mesh you set for the sensor "
-                    + "configuration and the setting from the asset configuration will be ignored."
-                    + "This message is generated because the use_collision_geometry parameter in the sensor"
-                    + "configuration file is different from the use_collision_mesh_instead_of_visual parameter in the asset"
-                    + "configuration file. \n\n\nThe simulation will still run but the rendering will be as per the sensor configuration file."
-                )
-                logger.warning(msg_str)
-        IGE_asset = IsaacGymAsset(self.gym, self.sim, asset_name, filepath, asset_class_dict)
-        asset_class_dict["isaacgym_asset"] = IGE_asset
+            # elif logic for IGE collision mesh removed
+        
+        # IGE_asset = IsaacGymAsset(self.gym, self.sim, asset_name, filepath, asset_class_dict)
+        # asset_class_dict["isaacgym_asset"] = IGE_asset
         self.asset_buffer[buffer_key] = asset_class_dict
         return asset_class_dict
 

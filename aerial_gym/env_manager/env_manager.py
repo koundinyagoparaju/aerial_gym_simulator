@@ -1,10 +1,10 @@
-from aerial_gym.env_manager.IGE_env_manager import IsaacGymEnv
+from aerial_gym.env_manager.isaaclab_env_manager import IsaacLabEnv
+from aerial_gym.robots.robot_manager_isaaclab import RobotManagerIsaacLab
 
 from aerial_gym.env_manager.base_env_manager import BaseManager
 from aerial_gym.env_manager.asset_manager import AssetManager
 from aerial_gym.env_manager.warp_env_manager import WarpEnv
 from aerial_gym.env_manager.asset_loader import AssetLoader
-from aerial_gym.robots.robot_manager import RobotManagerIGE
 from aerial_gym.env_manager.obstacle_manager import ObstacleManager
 
 
@@ -94,12 +94,12 @@ class EnvManager(BaseManager):
             has_IGE_cameras = True
         # ===============================================================================================
 
-        self.IGE_env = IsaacGymEnv(env_cfg, sim_cfg, has_IGE_cameras, self.device)
+        self.IGE_env = IsaacLabEnv(env_cfg, sim_cfg, has_IGE_cameras, self.device)
 
         # define a global dictionary to store the simulation objects and important parameters
         # that are shared across the environment, asset, and robot managers
         self.global_sim_dict = {}
-        self.global_sim_dict["gym"] = self.IGE_env.gym
+        self.global_sim_dict["gym"] = None # No Gym API
         self.global_sim_dict["sim"] = self.IGE_env.sim
         self.global_sim_dict["env_cfg"] = self.cfg
         self.global_sim_dict["use_warp"] = self.IGE_env.cfg.env.use_warp
@@ -116,7 +116,7 @@ class EnvManager(BaseManager):
         self.asset_loader = AssetLoader(self.global_sim_dict, self.device)
 
         logger.info("Creating robot manager.")
-        self.robot_manager = RobotManagerIGE(
+        self.robot_manager = RobotManagerIsaacLab(
             self.global_sim_dict, self.robot_name, self.controller_name, self.device
         )
         self.global_sim_dict["robot_config"] = self.robot_manager.cfg

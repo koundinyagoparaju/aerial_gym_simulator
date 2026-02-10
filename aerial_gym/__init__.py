@@ -1,5 +1,4 @@
 import os
-import isaacgym
 
 AERIAL_GYM_DIRECTORY = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
